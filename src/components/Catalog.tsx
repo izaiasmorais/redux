@@ -1,14 +1,24 @@
-import { useSelector, useStore } from "react-redux";
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
+import { IProduct } from "../store/modules/cart/types";
+import { CatalogItem } from "./CatalogItem";
 
 export function Catalog() {
-	// const store = useStore();
-	const catalog = useSelector((state) => state);
+	const [catalog, setCatalog] = useState<IProduct[]>([]);
 
-	console.log(catalog);
+	useEffect(() => {
+		api.get("products").then((response) => {
+			setCatalog(response.data);
+		});
+	}, []);
 
 	return (
-		<div>
+		<main>
 			<h1>Catalog</h1>
-		</div>
+
+			{catalog.map((i) => (
+				<CatalogItem key={i.id} product={i} />
+			))}
+		</main>
 	);
 }
